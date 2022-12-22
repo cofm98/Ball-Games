@@ -18,7 +18,12 @@ def compare(guess : str) -> bool:
                 return False
         guesses.append([*guess])
         if("".join(code) == guess):
-            print("Code was correct!")
+            sys.stdout.write("Code has been cracked!\n")
+            if(len(guesses) > 0):
+                for eachGuessID in range(len(guesses)):
+                    sys.stdout.write("[{}] - ".format(str(eachGuessID+1)) + "-".join(guesses[eachGuessID]) + "\n")
+            sys.stdout.write("[C]  [{}]".format("-".join(code)) + "\n")
+            sys.stdout.write("It took only " + str(len(guesses)) + " guesses to get it right!")
             return True
         else:
             outCode = []
@@ -37,7 +42,8 @@ correct = False
 while not correct:
     if(len(guesses) < 8):
         sys.stdout.write("\nThe code is 5 letters [X-X-X-X-X]. Any letter from A to F.\nBe warned! You only have 8 guesses!\n")
-        sys.stdout.write("      " + "-".join(currentHint) + "\n")
+        if(len(currentHint) > 0):
+            sys.stdout.write("     [" + "-".join(currentHint) + "]\n")
         if(len(guesses) > 0):
             for eachGuessID in range(len(guesses)):
                 sys.stdout.write("[{}] - ".format(str(eachGuessID+1)) + "-".join(guesses[eachGuessID]) + "\n")
