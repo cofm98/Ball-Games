@@ -67,7 +67,7 @@ def compare(guess : str, code : list) -> bool:
     '''Compare inputs within game, the main function system for the game'''
     global guesses
     global currentHint
-    if(len(guess) > 5):
+    if(len(guess) >= 5):
         guess = guess.upper()[0:5]
         for eachLetter in guess:
             if(eachLetter not in possibleCodes):
