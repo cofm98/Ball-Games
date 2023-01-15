@@ -18,6 +18,17 @@ class ElectricityRecord:
     zone1 = float()
     zone2 = float()
     zone3 = float()
+
+    stats = {
+                "total" : float(),
+                "average" : float(),
+                "min" : float(),
+                "max" : float()
+            }
+    totalPowerUsage = float()
+    averagePowerUsage = float()
+    minPowerUsage = float()
+    maxPowerUsage = float()
     def __init__ (this, time : str, temp : float, humidity : float, windSpeed : float, generalDiffusion : float, diffusion : float, zone1 : float, zone2 : float, zone3 : float):
         this.time = time
         this.temp = temp
@@ -30,6 +41,29 @@ class ElectricityRecord:
         this.zone3 = zone3
     def ToList (this) -> list:
         return [this.time, this.temp, this.humidity, this.windSpeed, this.generalDiffusion, this.diffusion, this.zone1, this.zone2, this.zone3]
+    def GetZones (this) -> list:
+        return [this.zone1, this.zone2, this.zone3]
+    def Calculate (this) -> None:
+        #Highest zone:
+        tempHighestZone = this.zone1
+        if(this.zone2 > tempHighestZone):
+            tempHighestZone = this.zone2
+        if(this.zone3 > tempHighestZone):
+            tempHighestZone = this.zone3
+        this.stats["max"] = tempHighestZone
+        #Lowest zone:
+        tempLowestZone = this.zone1
+        if(this.zone2 < tempLowestZone):
+            tempLowestZone = this.zone2
+        if(this.zone3 < tempLowestZone):
+            tempLowestZone = this.zone3
+        this.stats["min"] = tempLowestZone
+        #Total zones:
+        this.stats["total"] = this.zone1 + this.zone2 + this.zone3
+        #Average zones:
+        this.stats["average"] = this.stats["total"] / 3
+        return
+
    #[time, temp, humd, wnds, gend, diff, zon1, zon2, zon3]
 
 def AppendRecordsFile () -> None:
