@@ -43,7 +43,7 @@ class ElectricityRecord:
         return [this.time, this.temp, this.humidity, this.windSpeed, this.generalDiffusion, this.diffusion, this.zone1, this.zone2, this.zone3]
     def GetZones (this) -> list:
         return [this.zone1, this.zone2, this.zone3]
-    def Calculate (this) -> None:
+    def Calculate (this) -> dict:
         #Highest zone:
         tempHighestZone = this.zone1
         if(this.zone2 > tempHighestZone):
@@ -62,7 +62,7 @@ class ElectricityRecord:
         this.stats["total"] = this.zone1 + this.zone2 + this.zone3
         #Average zones:
         this.stats["average"] = this.stats["total"] / 3
-        return
+        return this.stats
 
    #[time, temp, humd, wnds, gend, diff, zon1, zon2, zon3]
 
@@ -100,16 +100,21 @@ def SaveRecords (input) -> None:
         toFile.append(",".join(str(eachVal) for eachVal in record))
     file.write("\n".join(toFile))
     file.close()
+    sys.stdout.write("\n\n--- Document Saved Successfully ---\n\n")
     return
 
 def ConfirmSave (input) -> bool:
     sys.stdout.write("Changes have been made, would you like to save?\n[Y/N]: ")
     saved = None
     while(saved == None):
-        if(sys.stdin.readline().strip()[0] == "N"):
-            saved = False
-        elif(sys.stdin.readline().strip()[0] == "Y"):
-            saved = True
+        try:
+            inp = (sys.stdin.readline().strip().lower() + " ")[0]
+            if(inp == "n"):
+                saved = False
+            elif(inp == "y"):
+                saved = True
+        except:
+            sys.stdout.write("Changes have been made, would you like to save?\n[Y/N]: ")
     return saved
     
 
@@ -227,7 +232,8 @@ def InvalidInput()->None:
 
 def Close()->None:
     '''Closes the program'''
-    sys.stdout.write("Closing...")
+    sys.stdout.write("Quitting...\nPress [ENTER] to Close.\n")
+    sys.stdin.readline()
     return
 
 

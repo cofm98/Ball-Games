@@ -42,7 +42,7 @@ def MainProgram()->bool:
             backend.SaveRecords(allRecords)
         elif(usrInput == 4):
             if madeModification:
-                if(backend.ConfirmSave()):
+                if(backend.ConfirmSave(allRecords)):
                     backend.SaveRecords(allRecords)
             backend.Close()
     return True
