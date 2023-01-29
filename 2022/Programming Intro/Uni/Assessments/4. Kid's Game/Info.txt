@@ -3,3 +3,22 @@ Aim:    Children's educational software
         Maximum age 12, preferred to be around 6-8
 
 Ideas:  Code breaker
+
+Input Pathway:
+        MENU
+        -> Code breaker
+        -> Settings -> Parental controls password
+        --> Guesses Limiter
+        ---> 1. Easy (8)
+        ---> 2. Medium (6)
+        ---> 3. Hard (4)
+        ---> 4. Impossible (2)
+        --> Character Limit
+        ---> 1. Common (A-F)
+        ---> 2. Complex (A-Z)
+        --> Hint Limiter
+        ---> 1. Friendly (Gives all hints)
+        ---> 2. Normal (Allows partial resolved answer)
+        ---> 3. Hard (Tells correct amount of letters)
+        ---> 4. Impossible (No hints)
+        -> Exit
