@@ -1,5 +1,3 @@
-import sys
-
 #The best way to declare this class is to ensure all data is being saved appropriately with certain naming conventions.
 # other than that, there are no arithmetic or analysis of data within the declaration. Therefore, there is no further improvements
 # of this class other than using dictionaries, enums, structs, or other datatypes which are not assessable within this criteria.
@@ -17,7 +15,6 @@ class Happiness:
     # declaring a particular element. The only improvement on this may be that the variables could be in order of above, just to improve readability. Other than that, there are no functionl
     # changes which are appriopriate to an initialise function.
     def __init__ (self, name : str, last_name : str, happy : bool, happy_city_services : int, happy_housing : int, happy_schooling : int, happy_police : int, happy_street_maintenance : int, happy_community_events : int):
-        self.happy = happy
         self.name = name
         self.last_name = last_name
         self.happy = happy
@@ -31,11 +28,7 @@ class Happiness:
     # enhance the usability, such as the program may send people emails based on what their scores were.
     def get_name (self) -> str:
         return self.name + " " + self.last_name
-
-
 class BackEndManager:
-    def __init__(self):
-        pass
     #The primary function of this function is to get a list of Happiness record objects which have been saved within a file, based on the fileURL variable.
     # It is common practice to declare the output variable within this program. This ensures it is simple to follow the tracks of what the variable is equal to, and what
     # it changes to throughout the running of the program.
@@ -60,7 +53,7 @@ class BackEndManager:
         # There are no further ways to increase the efficiency of this programming block, other than enhancing the problem-handling features within. If the files remain unmodified,
         # however, there should be no issues with handling the errors within. The output block at the end appends the formatted line, including integers, strings, and a boolean value.
         while nextLine != "":
-            unformatted = self.Split_Data(nextLine[:-1])
+            unformatted = self.__Split_Data(nextLine[:-1])
             likes_the_town = False
             if unformatted[2] == "1":
                 likes_the_town = True
@@ -74,7 +67,7 @@ class BackEndManager:
                 try:
                     each_preference.append(int(unformatted[x]))
                 except:
-                    sys.stdout.writelines(unformatted[x] + " is not typeof int")
+                    pass        #error
                 finally:
                     x+=1
             formatted = Happiness(unformatted[0], unformatted[1], likes_the_town,
@@ -89,7 +82,7 @@ class BackEndManager:
     # through a different paradigm as this, and therefore will be utilising less variables, lines of code and therefore, require less CPU load.
     # The output is declared as always at the beginning, to ensure that we know which form of data we are outputting and there can be no confusing, placing an integer into a
     # string array, resulting in a type error.
-    def Split_Data (self, to_array : str) -> list[str]:
+    def __Split_Data (self, to_array : str) -> list[str]:
         output = [""]
         n = 0
         #This loop will execute through each individual line of code, and if it is a comma, as CSV file work, it will go to the next array item. This will not work with
@@ -145,16 +138,14 @@ class BackEndManager:
         try:
             file = open(fileURL, "x")
             file.close()
-            sys.stdout.write("File Created!\n")
         except:
             output = False
-            sys.stdout.write("File Found!\n")
         return output
 
     #This system transfers the unreadable format of the object into a readable format, used for reading the data in mass. It repeats through each individual object through a list
     # However, this cannot be made further efficient as it is required in order to display all records to the user. It does not process data, it just translates it from a 
     # computer format into a readable human format.
-    def Show_Records (self, data : list):
+    def Show_Records (self, data : list) -> str:
         x = 0
         output_str = ""
         while x < len(data):
@@ -170,28 +161,15 @@ class BackEndManager:
             output_str += " - Street Maintenance: " + str(data[x].happy_street_maintenance) + "\n"
             output_str += " - Community Events: " + str(data[x].happy_community_events) + "\n\n"
             x+=1
-        sys.stdout.write(output_str)
+        return output_str
 
     #This is one of the menu items within the frontend. It is within the backend, since it would be more reliable to place it into the hands of a backend developer. This is 
     # since the object would have to be changed by both the frontend and the backend developer in order to achieve the given outcome. If there are any modifications to the
     # dataset that the administration would like to make, such as including how happy the citizen is about the dog teaching classes, it would require a change to the backend
     # class. Placing this function and procedure into the frontend would possibly make updates for the backend and frontend inconsistent and the class being of different versions
     # within the overall project. This code follows a bounding ball, and is readable.
-    def add_record (self, data : list) -> list:
-        sys.stdout.write("First Name: ")
-        f_name = sys.stdin.readline().strip()
-        sys.stdout.write("Last  Name: ")
-        l_name = sys.stdin.readline().strip()
-        happy = self.confirm("Is " + f_name + " " + l_name + " happy?")
-        sys.stdout.write("> Happiness Scores for Public Services [1->5]...\n")
-        city_services = self.get_score(" - City Services", 1, 5)
-        housing = self.get_score(" - Cost of Housing", 1, 5)
-        schooling = self.get_score(" - Schooling", 1, 5)
-        policing = self.get_score(" - Policing", 1, 5)
-        street_maintenance = self.get_score(" - Street Maintenance", 1, 5)
-        community_events = self.get_score(" - Community Events", 1, 5)
-        new_record = Happiness(f_name, l_name, happy, city_services, housing, schooling, policing, street_maintenance, community_events)
-        data.append(new_record)
+    def add_record (self, data : list, f_name : str, l_name : str, happy : bool, city_services : int, housing : int, schooling : int, police : int, street_maintenance : int, community_events : int) -> list:
+        data.append(Happiness(f_name, l_name, happy, city_services, housing, schooling, police, street_maintenance, community_events))
         return data
 
     #This function intends to get user input, and ensure it is correct. It is mostly utilised by the function above, however it offers versatility for other applications
@@ -200,20 +178,15 @@ class BackEndManager:
     # experience any unusual artifacts within the questioning format.
     #The function firstly declares the score to be the minimum value - 1, in order for it to be able to trigger the while loop. Doing this reduces the amount of variable the
     # program is processing, and ensures that the while loop is initially triggered, starting the question.
-    def get_score (self, question : str, min : int, max : int) -> int:
-        score = min - 1
-        #The most effective method is to ask the question, try and convert it into an integer - append and errors - and then to output it back to the location the function has been
-        # called from. This code block segements all of these within, and therefore no further efficiencies can be made. Within the assessment criteria, it does mention that try
-        # /except/finally blocks should not contain minimal amounts of code, however, this is the simplest way in order to achieve the given outcome.
-        while score < min or score > max:
-            sys.stdout.write(question + " [" + str(min) + "-" + str(max) + "]: ")
-            try:
-                score = int(sys.stdin.readline())
-            except:
-                sys.stdout.write("Invalid Input: Not a Number\n")
-            finally:
-                if(score < min or score > max):
-                    sys.stdout.write("Invalid Input: Not Within Range " + str(min) + " - " + str(max) + "\n")
+    def get_score (self, input : str, min : int, max : int) -> int:
+        score = None
+        try:
+            score = int(input)
+        except:
+            score = None
+        finally:
+            if(score < min or score > max):
+                score = None
         return score
 
     #This function simply returns the main menu back to the frontend, this is due that it requires to check whether the file has been modified. The modification of the file
@@ -243,60 +216,33 @@ class BackEndManager:
     # Though, this does not exist within the functional requirements and therefore has been omitted. As mentioned within the frontend.py, where this function is majorly called from,
     # The final output may be "EI", representing that there was an error in processing the response. Error: Input. This could be made further efficient by possibly adding another
     # variable after [ menu_type : str = None ] as [ "question : str" ], this is since it would increase the useability of this function in different parts of the program.
-    def get_input (self, menu_type : str = None) -> str:
+    def get_input (self, inp : str, menu_type : str = None) -> str:
         output = ""
         #This code block is executed if the function is called in its most basic format [ get_input() ]. This fragment cannot be made any further efficient.
         if(menu_type == None):
-            output = sys.stdin.readline().strip()
-        #This code block is within the main menu, it cannot be made any further efficient. The strange input handling is so it cannot return an error. This may cause a debate
-        # whether it is just sloppy programming; avoiding errors where necessary, or whether it is efficient usage of concatenation. I have found that this technique reduces
-        # programming time, and returns the same errors no matter what. The only shortfall within this, is that if the user inputs "QER", for example, it will grab the first 
-        # letter "Q", and process the later functions off that. This may be what is intended, or not. It must be declared within a requirement in order to achieve the desired
-        # result.
+            output = inp.strip()
         elif(menu_type == "main"):
-            input = (sys.stdin.readline().strip().upper() + " ")[0]
-            #This segment of the code cannot be made any further efficient, other than by using the tools which python provides, such as the "in" operator and checking whether the
-            # input exists within a list of acceptable inputs.
-            if input == "A" or input == "C" or input == "Q" or input == "R" or input == "S":
-                output = input
+            input_assess = (inp.strip().upper() + " ")[0]
+            if input_assess == "A" or input_assess == "C" or input_assess == "Q" or input_assess == "R" or input_assess == "S":
+                output = input_assess
             else:
                 output = "EI"
         return output
-
-    #This function is efficient as possible within the requirements. As python is a language which approves of changing the datatype of a variable, it may be able to 
-    # handle more exceptions simpler. This function exists in order to get the load file, and not to load that file. This improves transferrability for the frontend, however
-    # may cause confusion to a frontend developer. Therefore, the only major efficiency enhancement I could find is that it may be conjoined within multiple functions in order
-    # to reduce the size of the frontend code.
-    def get_load_file (self) -> str:
-        input = False
+    def get_load_file (self, file : str) -> str:
         output = ""
-        #This while loop is necessary as it awaits for the user to be happy with their inputs. Loading an incorrect file may cause detrimental issues for a user depending on
-        # their audience. Therefore, two steps of getting a readline input are made, both are through another command. Double confirming for the sake of safety.
-        while input == False:
-            sys.stdout.write("Load File (csv): ")
-            output = self.get_input() + ".csv"
-            input = self.confirm("Are you sure you would like to load "+output+"?")
+        output = self.get_input(file) + ".csv"
         return output
-
-    #Confirming the user's input is an essential part of this program, this function is very similar in terms of the get_input function, however it only processes a 
-    # 'yes' or 'no' answer. The added benefit to this, if the user does not understand, eventhough they may enter "Yes" as the word completely, it will still function properly
-    # as intended. This was done purposely in order to continue with the same functional requirement placed on by the input processing which is conducted within the get_input
-    # function. The output remains False at the start, and the while loop disregards it, and continues until the input is correct. By being bound by datatype consistency,
-    # the code appropriately processes these values as is most appropriate.
-    def confirm (self, text : str) -> bool:
-        output = False
-        input = ""
-        #This code block is highly similar to the get_input process, and the reasoning for the input being placed as so is explained within that code comment.
-        # Other than that, this code works as efficiently as possible, checking only against the input which in the first loop will not be either y, nor n.
-        while input != "Y" and input != "N":
-            sys.stdout.write(text+"\n[Y]es/[N]o: ")
-            input = (sys.stdin.readline().strip().upper() + " ")[0]
-            #This short if, elif block contains a somewhat complex set of instructions, in order to make this function achieve its goal. In the event of being Y, the output is changed
-            # Another loop will not be made. In the event of not being N, there were not valid inputs - this is since the input equalling Y has already been checked, and the codeblock
-            # will stop if this statement is True. This is the most efficient method to conduct this, there are no further better ways to convert this "y" and "n" string into a 
-            # true and false boolean.
-            if input == "Y":
-                output = True
-            elif input != "N":
-                sys.stdout.write("Error: Please Enter a Valid Answer (Y/N)\n")
+    #This section is as efficient as possible. The reason for stripping the string and appending " " i.e., a blank space on the end is in order to never obtain an error
+    # when fetching index 0 of the string.
+    def InputAsBool (self, inp : str) -> bool:
+        input_assess = (inp.strip().upper() + " ")[0]
+        output = None
+        #The if statement block cannot be done any further efficiently within the instruction guideline. In a complex programming scenario, it would be reasonable to translate
+        # this code block into a ternary operator rather than assessing each step.
+        if input_assess == "Y":
+            output = True
+        #The elif statement block cannot be done more efficiently. If this instruction the output will remain to hold the value of "none", which will return to the user that 
+        # there was an error in processing the value.
+        elif input_assess == "N":
+            output = False
         return output
